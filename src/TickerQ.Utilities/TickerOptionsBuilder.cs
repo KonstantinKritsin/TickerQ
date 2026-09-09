@@ -60,6 +60,7 @@ namespace TickerQ.Utilities
 
         internal Action<IServiceCollection> ExternalProviderConfigServiceAction { get; set; }
         internal Action<IServiceCollection> DashboardServiceAction { get; set; }
+        [field: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
         internal Type TickerExceptionHandlerType { get; private set; }
 
