@@ -39,7 +39,7 @@ internal class TickerQSchedulerBackgroundService : BackgroundService, ITickerQHo
         _taskScheduler = taskScheduler;
         _internalTickerManager = internalTickerManager ?? throw new ArgumentNullException(nameof(internalTickerManager));
         _concurrencyGate = concurrencyGate;
-        _minPollingInterval = ResolveMinPollingInterval(schedulerOptions);
+        _minPollingInterval = schedulerOptions?.MinPollingInterval ?? TimeSpan.FromSeconds(1);
         _restartThrottle = new RestartThrottleManager(() => _schedulerLoopCancellationTokenSource?.Cancel());
     }
     
@@ -159,18 +159,6 @@ internal class TickerQSchedulerBackgroundService : BackgroundService, ITickerQHo
 
             await Task.Delay(sleepDuration, cancellationToken);
         }
-    }
-
-    private static TimeSpan ResolveMinPollingInterval(SchedulerOptionsBuilder schedulerOptions)
-    {
-        if (schedulerOptions == null)
-            return TimeSpan.FromSeconds(1);
-
-        var prop = schedulerOptions.GetType().GetProperty("MinPollingInterval");
-        if (prop?.PropertyType == typeof(TimeSpan))
-            return (TimeSpan)prop.GetValue(schedulerOptions);
-
-        return TimeSpan.FromSeconds(1);
     }
 
     private async Task ReleaseAllResourcesAsync(Exception ex)
